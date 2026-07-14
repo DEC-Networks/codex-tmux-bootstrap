@@ -187,7 +187,7 @@ select_profile() {
 
 ensure_persistent_path() {
     local bin_dir="$1"
-    local profile path_assignment
+    local profile path_assignment dollar='$'
 
     for profile in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
         if [[ -f "$profile" ]] && grep -Fq "$bin_dir" "$profile"; then
@@ -196,7 +196,7 @@ ensure_persistent_path() {
     done
 
     profile="$(select_profile)"
-    printf -v path_assignment 'export PATH=%q:"$PATH"' "$bin_dir"
+    printf -v path_assignment 'export PATH=%q:"%sPATH"' "$bin_dir" "$dollar"
     {
         printf '\n# Codex TMUX Bootstrap PATH (%s)\n' "$RUNNER_VERSION"
         printf '%s\n' "$path_assignment"

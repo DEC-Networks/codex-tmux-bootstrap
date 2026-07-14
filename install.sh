@@ -7,7 +7,7 @@ umask 077
 
 readonly BOOTSTRAP_VERSION="v26.7.14.1"
 readonly DEFAULT_RUNNER_URL="https://raw.githubusercontent.com/DEC-Networks/codex-tmux-bootstrap/v26.7.14.1/runner.sh"
-readonly DEFAULT_RUNNER_SHA256="aab8aec929791797171cd47ab70abf1741f3cae39ebc34e16a2f89693ced9556"
+readonly DEFAULT_RUNNER_SHA256="42b070794abf04c78c152a4e478cfc4514a2d2235387c09ff08bab2b85fdb4e1"
 
 RUNNER_URL="${CODEX_TMUX_RUNNER_URL:-$DEFAULT_RUNNER_URL}"
 RUNNER_SHA256="${CODEX_TMUX_RUNNER_SHA256:-$DEFAULT_RUNNER_SHA256}"
@@ -55,10 +55,10 @@ if [[ "$actual_sha256" != "$RUNNER_SHA256" ]]; then
     exit 1
 fi
 
-if ! (: < "$TTY_PATH") 2>/dev/null; then
+if ! exec 3<> "$TTY_PATH"; then
     error "an interactive terminal is required."
     exit 1
 fi
 
-printf 'Verified Codex TMUX runner %s. Starting...\n' "$BOOTSTRAP_VERSION" > "$TTY_PATH"
-bash "$RUNNER_FILE" "$@" < "$TTY_PATH" > "$TTY_PATH" 2> "$TTY_PATH"
+printf 'Verified Codex TMUX runner %s. Starting...\n' "$BOOTSTRAP_VERSION" >&3
+bash "$RUNNER_FILE" "$@" <&3 >&3 2>&3
