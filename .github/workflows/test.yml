@@ -1,0 +1,24 @@
+# Version: v26.7.14.1
+name: Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shell:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Syntax
+        run: bash -n install.sh runner.sh tests/test.sh
+      - name: ShellCheck
+        run: shellcheck install.sh runner.sh tests/test.sh
+      - name: Behavioral Tests
+        run: ./tests/test.sh
